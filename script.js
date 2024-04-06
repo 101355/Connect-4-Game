@@ -18,15 +18,91 @@ let currentPlayer;
 const generateRandomNumber = (min,max) => 
 Math.floor(Math.random() * (max-min)) + min;
 
+// Check rows 
+const checkAdjacentRowValues = (row) => {
+    return verifyArray(initialMatrix[row]);
+};
+
+// Check columns
+const checkAdjacentColumnValues = (column) => {
+    let colWinCount = 0,
+    colwinBool = false;
+    initialMatrix.forEach( (element,index) => {
+        if(element[column] == currentPlayer){
+            colWinCount += 1;
+            if(colWinCount == 4){
+                colWinBool = true
+            }
+        }
+        else{
+            colWinCount = 0;
+        }
+    });
+    // no match 
+    return colwinBool;
+};
+
+// Get Right diagonal values
+const getRightDiagonal = (row,column,rowLength,columnLength) => {
+    let rowCount = row;
+    let columnCount = column;
+    let rightDiagonal = [];
+    while(rowCount > 0){
+        if(columnCount >= columnLength-1){
+            break;
+        }
+        rowCount -= 1;
+        columnCount += 1;
+        rightDiagonal.unshift(initialMatrix[rowCount][columnCount]);
+    }
+    rowCount = row;
+    columnCount = column;
+    while(rowCount < rowLength){
+        if(columnCount < 0){
+            break;
+        }
+        rightDiagonal.push(initialMatrix[rowCount][columnCount]);
+        rowCount += 1;
+        columnCount -= 1;
+    }
+    return rightDiagonal;
+}
+
+// Check diagonal
+const checkAdjacentDiagonalValues = (row,column) => {
+    let diagWinBool = false;
+    let tempChecks = {
+        leftTop: [],
+        rigthTop: [],
+    };
+    let columnLength = initialMatrix[row].length;
+    let rowLength = initialMatrix.length;
+
+    //Store left and right diagonal array
+    tempChecks.leftTop = [
+        ...getLeftDiagonal(row,column,rowLength,columnLength),
+    ];
+
+    tempChecks.rigthTop = [
+        ...getRightDiagonal(row,column,rowLength,columnLength),
+    ];
+    // check both arrays for similarrities 
+    diagWinBool = verifyArray(tempChecks.rigthTop);
+    if(diagWinBool){
+        diagWinBool = verifyArray(tempChecks.leftTop);
+    }
+    return diagWinBool;
+};
+
 // Win check logic 
 const winCheck = (row,column) => {
     // if any of the functions return true we return true
-    return checkAjacentRowValue(row) ? ture : checkAjacentColumnValues(column) ? true :checkAdjacentdiagonalValues(row,column) ? true : flase;
+    return checkAdjacentRowValues(row) ? ture : checkAdjacentColumnValues(column) ? true :checkAdjacentDiagonalValues(row,column) ? true : false;
 }
 
 // Sets the circle to exact points
 const setPiece = (startCount,colValue) => {
-    let rows = document.querySelector(".grid-rows");
+    let rows = document.querySelector(".grid-row");
     // Intially it will place the circles in the last row else if no place availabke we will decrement the count until we find empty slot
     if (initialMatrix[startCount][colValue] != 0){
         startCount -= 1;
@@ -36,12 +112,12 @@ const setPiece = (startCount,colValue) => {
         // place circle 
         let currentRow = rows[startCount].querySelectorAll
         (".grid-box");
-        currentRow[colValue].classList.add("filled", `player${currentPlayer}`);
+        currentRow[colValue].classList.add("filled", `Player${currentPlayer}`);
         // Update Matrix
         initialMatrix[startCount][colValue] = currentPlayer;
         // Check for wins
         if(winCheck(startCount,colValue)) {
-            message.innerHTML = `player<span>${currentPlayer}</span> wins`;
+            message.innerHTML = `Player<span>${currentPlayer}</span> wins`;
             startScreen.classList.remove("hide");
             return false;
         }
@@ -56,9 +132,9 @@ const fillBox = (e) => {
     // get column value
     let colValue = parseInt(e.target.getAttribute("data-value"));
     // 5 because we have 6 rows (0-5)
-    SecurityPolicyViolationEvent(5, colValue);
+    setPiece(5, colValue);
     currentPlayer = currentPlayer == 1 ? 2 : 1;
-    playerTurn.innerHTML = `player <span>${currentPlayer}'s</span> turn`
+    playerTurn.innerHTML = `Player <span>${currentPlayer}'s</span> turn`
 }
 
 // Create Matrix
