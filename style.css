@@ -36,7 +36,7 @@ body{
     flex-direction: column;
 }
 
-.player1::before{
+.player1:before{
     content: "";
     display: inline-block;
     width: 3.12em;
@@ -45,7 +45,7 @@ body{
     background: radial-gradient(#fff04e 1.12em, #ffc400 1.25em);
 }
 
-.player2::before{
+.player2:before{
     content: "";
     display: inline-block;
     width: 3.12em;
@@ -86,7 +86,7 @@ body{
 }
 
 .grid-row{
-    margin: 0;
+    margin: 0 auto;
     display: flex;
 }
 
@@ -101,4 +101,10 @@ body{
 
 .hide {
     display: none;
+}
+
+.message{
+    margin-bottom: 1em;
+    color: #fff;
+    font-size: 1.2em;
 }
