@@ -18,8 +18,43 @@ let currentPlayer;
 const generateRandomNumber = (min,max) => 
 Math.floor(Math.random() * (max-min)) + min;
 
+//Loop through array and check for same values
+const verifyArray = (arrayElement) =>{
+    let bool = false;
+    let elementCount = 0;
+    arrayElement.forEach((element,index) => {
+        if (element == currentPlayer) {
+            elementCount+=1;
+            if(elementCount == 4) {
+                bool = true;
+            }
+        }
+        else{
+            elementCount = 0;            
+        }
+    });
+    return bool;
+};
+
+// Check for game over (last step)
+const gameOverCheck = () => {
+    let truthCounnt = 0;
+    for(let innerArray of initialMatrix) {
+        if(innerArray.every((val) => val != 0)){
+            truthCounnt += 1;
+        }
+        else{
+            return false;
+        }
+    }
+    if(truthCounnt == 6){
+        message.innerText = "Game Over";
+        startScreen.classList.remove("hide");
+    }
+};
+
 // Check rows 
-const checkAdjacentRowValues = (row) => {
+const checkAdjacentRowValues = row => {
     return verifyArray(initialMatrix[row]);
 };
 
@@ -66,7 +101,34 @@ const getRightDiagonal = (row,column,rowLength,columnLength) => {
         columnCount -= 1;
     }
     return rightDiagonal;
-}
+};
+
+const getLeftDiagonal = (row,column,rowLength,
+columnLength) => {
+    let rowCount = row;
+    let columnLength = column;
+    let leftDiagonal = [];
+    while(rowCount>0){
+        if(columnCount<=0) {
+            break;
+        }
+        rowCount -= 1;
+        columnCount -= 1;
+        leftDiagonal.unshift(initialMatrix[rowCount][columnCount]);
+    }
+    rowCount = row;
+    columnCount = column;
+    while (rowCount < rowLength) {
+        if(columnCount >= columnLength) {
+            break;
+        }
+        leftDiagonal.push(initialMatrix[rowCount][columnCount]);
+        rowCount += 1;
+        columnCount += 1;
+    }
+    return leftDiagonal;
+};
+
 
 // Check diagonal
 const checkAdjacentDiagonalValues = (row,column) => {
@@ -88,7 +150,7 @@ const checkAdjacentDiagonalValues = (row,column) => {
     ];
     // check both arrays for similarrities 
     diagWinBool = verifyArray(tempChecks.rigthTop);
-    if(diagWinBool){
+    if(!diagWinBool){
         diagWinBool = verifyArray(tempChecks.leftTop);
     }
     return diagWinBool;
@@ -102,7 +164,7 @@ const winCheck = (row,column) => {
 
 // Sets the circle to exact points
 const setPiece = (startCount,colValue) => {
-    let rows = document.querySelector(".grid-row");
+    let rows = document.querySelectorAll(".grid-row");
     // Intially it will place the circles in the last row else if no place availabke we will decrement the count until we find empty slot
     if (initialMatrix[startCount][colValue] != 0){
         startCount -= 1;
@@ -165,4 +227,10 @@ window.onload = startGame = async () => {
     container.innerHTML = "";
     await matrixCreator();
     playerTurn.innerHTML = `Player <span>${currentPlayer}'s</span> turn`;
-}
+};
+
+//start game
+startButton.addEventListener("click",()=>{
+    startScreen.classList.add("hide");
+    startGame();
+})
