@@ -1,6 +1,6 @@
 // Initial references 
 const container = document.querySelector(".container");
-const playerTurn = document.getElementById("playTurn");
+const playerTurn = document.getElementById("playerTurn");
 const startScreen = document.querySelector(".startScreen");
 const startButton = document.getElementById("start");
 const message = document.getElementById("message");
@@ -106,7 +106,7 @@ const getRightDiagonal = (row,column,rowLength,columnLength) => {
 const getLeftDiagonal = (row,column,rowLength,
 columnLength) => {
     let rowCount = row;
-    let columnLength = column;
+    let columnCount = column;
     let leftDiagonal = [];
     while(rowCount>0){
         if(columnCount<=0) {
@@ -174,7 +174,7 @@ const setPiece = (startCount,colValue) => {
         // place circle 
         let currentRow = rows[startCount].querySelectorAll
         (".grid-box");
-        currentRow[colValue].classList.add("filled", `Player${currentPlayer}`);
+        currentRow[colValue].classList.add("filled", `player${currentPlayer}`);
         // Update Matrix
         initialMatrix[startCount][colValue] = currentPlayer;
         // Check for wins
