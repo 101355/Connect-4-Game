@@ -64,7 +64,7 @@ const checkAdjacentColumnValues = (column) => {
     if (element[column] == currentPlayer) {
       colWinCount += 1;
       if (colWinCount == 4) {
-        colWinBool = true;
+        colwinBool = true;
       }
     } else {
       colWinCount = 0;
@@ -155,7 +155,7 @@ const checkAdjacentDiagonalValues = (row, column) => {
 const winCheck = (row, column) => {
   // if any of the functions return true we return true
   return checkAdjacentRowValues(row)
-    ? ture
+    ? true
     : checkAdjacentColumnValues(column)
     ? true
     : checkAdjacentDiagonalValues(row, column)
